@@ -70,7 +70,8 @@ return (
   wrapperStyle={{}}
   wrapperClass=""
   />} 
-        {error && <Toaster position="top-right" reverseOrder={false}/>}
+  <Toaster position="top-center" reverseOrder={false}/>
+        {error}
         {images.length > 0 && <ImageGallery images={images} onImageClick={handleImageClick}/>}
         {images.length > 0 && !loading && page < totalPages &&(<LoadMoreBtn onClick={handleLoadMore}/>)}
         {modalIsOpen && selectedImage &&  <ImageModal image={selectedImage} onClose={closeModal} />}
