@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import { fetchImages } from '../../images-api';
-import { RotatingLines } from 'react-loader-spinner'
 import SearchBar from "../SearchBar/SearchBar";
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
 import css from './App.module.css';
-import toast, { Toaster } from 'react-hot-toast';
+import Loader from '../Loader/Loader';
+import toast from 'react-hot-toast';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function App(){
 const [images, setImages] = useState([]);
@@ -20,7 +21,7 @@ const [selectedImage, setSelectedImage] = useState(null);
 
 const handleSearch = async (newSearch) => {
     setImages([]);
-    setError(false);
+    setError(false); 
     setPage(1);
     setSearch(newSearch);
 }
@@ -48,8 +49,7 @@ useEffect(() => {
             setError(false);
             const data = await fetchImages(search, page);
             setImages(prevImages => [...prevImages, ...data.results]);
-            setTotalPages(data.total_pages);
-            
+            setTotalPages(data.total_pages); 
         } catch (error) {
             toast.error('Oops! There was an error? please reload this page!')
             setError(true);
@@ -62,16 +62,9 @@ useEffect(() => {
 
 return (
     <div className={css.container}>
+        {error && <ErrorMessage/>}
         <SearchBar onSearch={handleSearch}/>
-        {loading && <RotatingLines
-  height="96"
-  ariaLabel="rotating-lines-loading"
-  color="grey"
-  wrapperStyle={{}}
-  wrapperClass=""
-  />} 
-  <Toaster position="top-center" reverseOrder={false}/>
-        {error}
+        {loading && <Loader/>} 
         {images.length > 0 && <ImageGallery images={images} onImageClick={handleImageClick}/>}
         {images.length > 0 && !loading && page < totalPages &&(<LoadMoreBtn onClick={handleLoadMore}/>)}
         {modalIsOpen && selectedImage &&  <ImageModal image={selectedImage} onClose={closeModal} />}
